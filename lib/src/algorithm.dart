@@ -6,11 +6,12 @@ typedef Algorithm AlgorithmFactory(List params, String salt);
 abstract class Algorithm {
   static final Map<String, AlgorithmFactory> _algorithms = {
     PBKDF2.id: (List params, String salt) {
-      return new PBKDF2(
-          blockLength: int.parse(params[0]),
-          iterationCount: int.parse(params[1]),
-          desiredKeyLength: int.parse(params[2]),
-          salt: salt);
+      return PBKDF2(
+        blockLength: int.parse(params[0]),
+        iterationCount: int.parse(params[1]),
+        desiredKeyLength: int.parse(params[2]),
+        salt: salt,
+      );
     },
   };
 
@@ -27,7 +28,5 @@ abstract class Algorithm {
   String process(String password);
 
   /// Encodes the Algorithm [id] and its [params] to the used [salt] and the generated [hash].
-  String encode(String id, List params, String salt, String hash) {
-    return ['', id, params.join(','), salt, hash].join('\$');
-  }
+  String encode(String id, List params, String salt, String hash) => ['', id, params.join(','), salt, hash].join('\$');
 }

@@ -21,25 +21,16 @@ class PBKDF2 extends Algorithm {
   late PBKDF2KeyDerivator _derivator;
   late Uint8List _salt;
 
-  PBKDF2(
-      {this.blockLength = 64,
-      this.iterationCount = 10000,
-      this.desiredKeyLength = 64,
-      String? salt = null}) {
-    final rnd = new FortunaRandom()..seed(new KeyParameter(new Uint8List(32)));
-
-    _salt =
-        salt == null ? rnd.nextBytes(32) : createUint8ListFromHexString(salt);
-
-    _derivator =
-        new PBKDF2KeyDerivator(new HMac(new SHA512Digest(), blockLength))
-          ..init(new Pbkdf2Parameters(_salt, iterationCount, desiredKeyLength));
+  PBKDF2({this.blockLength = 64, this.iterationCount = 10000, this.desiredKeyLength = 64, String? salt = null}) {
+    final rnd = FortunaRandom()..seed(KeyParameter(Uint8List(32)));
+    _salt = salt == null ? rnd.nextBytes(32) : createUint8ListFromHexString(salt);
+    _derivator = PBKDF2KeyDerivator(HMac(SHA512Digest(), blockLength))
+      ..init(Pbkdf2Parameters(_salt, iterationCount, desiredKeyLength));
   }
 
   @override
   String process(String password) {
-    final bytes =
-        _derivator.process(new Uint8List.fromList(password.codeUnits));
+    final bytes = _derivator.process(Uint8List.fromList(password.codeUnits));
 
     return encode(
       id,
